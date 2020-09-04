@@ -1,0 +1,6 @@
+{
+    "mongo_uri" : "mongodb+srv://<username>:<Pasword>@<server>.mongodb.net/<nama_db>",
+    "jwt_secret_key" : "SecretKey",
+    "uploaded_image_dest" : "static/images/",
+    "cctv_secret_key": "example"
+}
