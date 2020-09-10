@@ -29,7 +29,7 @@ app.json_encoder = JSONEncoder
 @jwt.user_claims_loader
 def add_claims_to_jwt(identity):
     user = get_one_without_password(identity)
-    return {"email": user["email"],
+    return {"user_id": user["user_id"],
             "name" : user["name"],
             "is_admin": user["is_admin"],
             "is_staff": user["is_staff"],

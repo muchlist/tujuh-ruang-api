@@ -16,8 +16,8 @@ from validations import role_validations as valid
 bp = Blueprint('user_admin_bp', __name__, url_prefix='/admin')
 
 
-def user_eksis(email):
-    if user_query.get_one_without_password(email):
+def user_eksis(user_id):
+    if user_query.get_one_without_password(user_id):
         return True
     return False
 
@@ -39,8 +39,7 @@ def register_user():
     try:
         data = schema.load(request.get_json())
     except ValidationError as err:
-        return err.messages, 400
-        # return {"msg": "Input tidak valid"}, 400
+        return {"msg": str(err.messages)}, 400
 
     # hash password
     pw_hash = bcrypt.generate_password_hash(
@@ -48,17 +47,19 @@ def register_user():
     data["password"] = pw_hash
 
     # mengecek apakah user exist
-    if user_eksis(data["email"]):
+    if user_eksis(data["user_id"]):
         return {"msg": "user tidak tersedia"}, 400
 
     # mendaftarkan ke mongodb
-    user_dto = UserDto(data['email'],
+    user_dto = UserDto(data['user_id'],
                        pw_hash, data['name'],
                        data['is_admin'],
                        data['is_staff'],
                        data['is_customer'],
                        data['phone'],
                        data['address'],
+                       data['join_date'],
+                       data['position'],
                        )
     # try:
     #     user_update.insert_user(user_dto)
@@ -75,9 +76,9 @@ Merubah dan mendelete user
 """
 
 
-@bp.route('/users/<string:email>', methods=['PUT', 'DELETE'])
+@bp.route('/users/<string:user_id>', methods=['PUT', 'DELETE'])
 @jwt_required
-def put_delete_user(email):
+def put_delete_user(user_id):
     if not valid.is_admin(get_jwt_claims()):
         return {"msg": "user tidak memiliki authorisasi"}, 400
 
@@ -86,20 +87,21 @@ def put_delete_user(email):
         try:
             data = schema.load(request.get_json())
         except ValidationError as err:
-            return err.messages, 400
-            # return {"msg": "Input tidak valid"}, 400
+            return {"msg": str(err.messages)}, 400
 
-        if not user_eksis(email):
-            return {"msg": f"user {email} tidak ditemukan"}, 400
+        if not user_eksis(user_id):
+            return {"msg": f"user {user_id} tidak ditemukan"}, 400
 
         user_dto = UserDto(
-            email,
+            user_id,
             "", data['name'],
             data['is_admin'],
             data['is_staff'],
             data['is_customer'],
             data['phone'],
             data['address'],
+            data['join_date'],
+            data['position'],
         )
 
         try:
@@ -107,14 +109,14 @@ def put_delete_user(email):
         except:
             return {"msg": "gagal menyimpan ke database"}, 500
 
-        return {"msg": f"user {email} berhasil diubah"}, 201
+        return {"msg": f"user {user_id} berhasil diubah"}, 201
 
     if request.method == 'DELETE':
-        if not user_eksis(email):
-            return {"msg": f"user {email} tidak ditemukan"}
+        if not user_eksis(user_id):
+            return {"msg": f"user {user_id} tidak ditemukan"}
 
-        user_update.delete_user(email)
-        return {"msg": f"user {email} berhasil dihapus"}, 201
+        user_update.delete_user(user_id)
+        return {"msg": f"user {user_id} berhasil dihapus"}, 201
 
 
 """
@@ -124,19 +126,19 @@ Reset Password
 """
 
 
-@bp.route('/reset/<string:email>', methods=['GET'])
+@bp.route('/reset/<string:user_id>', methods=['GET'])
 @jwt_required
-def reset_password_by_admin(email):
+def reset_password_by_admin(user_id):
     if not valid.is_admin(get_jwt_claims()):
         return {"msg": "user tidak memiliki authorisasi"}, 403
 
     if request.method == 'GET':
-        if not user_eksis(email):
-            return {"msg": f"user {email} tidak ditemukan"}, 404
+        if not user_eksis(user_id):
+            return {"msg": f"user {user_id} tidak ditemukan"}, 404
 
         # hash password
         pw_hash = bcrypt.generate_password_hash("Pelindo3").decode("utf-8")
 
-        user_update.put_password(email, pw_hash)
+        user_update.put_password(user_id, pw_hash)
 
-        return {"msg": f"Password user {email} berhasil direset"}, 201
+        return {"msg": f"Password user {user_id} berhasil direset"}, 201

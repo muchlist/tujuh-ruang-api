@@ -2,7 +2,7 @@ from marshmallow import Schema, fields
 
 
 class UserRegisterSchema(Schema):
-    email = fields.Email(required=True)
+    user_id = fields.Str(required=True)
     password = fields.Str(required=True)
     name = fields.Str(required=True)
     is_admin = fields.Bool(required=True)
@@ -10,6 +10,8 @@ class UserRegisterSchema(Schema):
     is_customer = fields.Bool(required=True)
     phone = fields.Str(required=True)
     address = fields.Str(required=True)
+    join_date = fields.DateTime(required=True)
+    position = fields.Str(required=True)
 
 
 class UserEditSchema(Schema):
@@ -19,10 +21,12 @@ class UserEditSchema(Schema):
     is_customer = fields.Bool(required=True)
     phone = fields.Str(required=True)
     address = fields.Str(required=True)
+    join_date = fields.DateTime(required=True)
+    position = fields.Str(required=True)
 
 
 class UserLoginSchema(Schema):
-    email = fields.Str(required=True)
+    user_id = fields.Str(required=True)
     password = fields.Str(required=True)
 
 

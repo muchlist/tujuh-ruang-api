@@ -31,25 +31,24 @@ def login_user():
     try:
         data = schema.load(request.get_json())
     except ValidationError as err:
-        return err.messages, 400
-        # return {"msg": "Input tidak valid"}, 400
+       return {"msg": str(err.messages)}, 400
 
     # mendapatkan data user termasuk password
-    user = user_query.get_one(data["email"])
+    user = user_query.get_one(data["user_id"])
 
     # Cek apakah hash password sama
     if not (user and bcrypt.check_password_hash(user["password"], data["password"])):
         return {"msg": "user atau password salah"}, 400
 
-    # Membuat akses token menggunakan email di database
+    # Membuat akses token menggunakan user_id di database
     access_token = create_access_token(
-        identity=user["email"],
+        identity=user["user_id"],
         expires_delta=timedelta(days=EXPIRED_TOKEN),
         fresh=True)
 
     response = {
         'access_token': access_token,
-        'email': user['email'],
+        'user_id': user['user_id'],
         'name': user['name'],
         'is_admin': user['is_admin'],
         'is_staff': user['is_staff'],
@@ -61,15 +60,15 @@ def login_user():
 
 """
 ------------------------------------------------------------------------------
-Detail user by email
+Detail user by user_id
 ------------------------------------------------------------------------------
 """
 
 
-@bp.route("/users/<string:email>", methods=['GET'])
+@bp.route("/users/<string:user_id>", methods=['GET'])
 @jwt_required
-def user(email):
-    result = user_query.get_one_without_password(email)
+def user(user_id):
+    result = user_query.get_one_without_password(user_id)
     return jsonify(result), 200
 
 
@@ -130,12 +129,11 @@ def change_password():
     try:
         data = schema.load(request.get_json())
     except ValidationError as err:
-        return err.messages, 400
-        # return {"msg": "Input tidak valid"}, 400
+        return {"msg": str(err.messages)}, 400
 
-    user_email = get_jwt_identity()
+    user_user_id = get_jwt_identity()
 
-    user = user_query.get_one(user_email)
+    user = user_query.get_one(user_user_id)
 
     # Cek apakah hash password inputan sama
     if not bcrypt.check_password_hash(user["password"], data["password"]):
@@ -145,5 +143,5 @@ def change_password():
     new_password_hash = bcrypt.generate_password_hash(
         data["new_password"]).decode("utf-8")
 
-    user_update.put_password(user_email, new_password_hash)
+    user_update.put_password(user_user_id, new_password_hash)
     return {'msg': "password berhasil di ubah"}, 200

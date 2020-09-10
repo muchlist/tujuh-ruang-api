@@ -1,14 +1,14 @@
 from databases.db import mongo
 
 
-def get_one(email: str) -> dict:
-    user = mongo.db.users.find_one({"email": email.upper()})
+def get_one(user_id: str) -> dict:
+    user = mongo.db.users.find_one({"user_id": user_id.upper()})
     return user
 
 
-def get_one_without_password(email: str) -> dict:
+def get_one_without_password(user_id: str) -> dict:
     result = mongo.db.users.find_one(
-        {"email": email.upper()}, {"password": 0})
+        {"user_id": user_id.upper()}, {"password": 0})
     return result
 
 
