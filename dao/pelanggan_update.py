@@ -13,6 +13,7 @@ def buat_pelanggan(data: PelangganDto) -> str:
         "dibuat": data.dibuat,
         "diupdate": data.diupdate,
         "dibuat_oleh": data.dibuat_oleh,
+        "diupdate_oleh": data.diupdate_oleh,
         "total_transaksi_lunas": 0,
         "total_hutang": 0,
         "aktif": data.aktif
@@ -27,11 +28,12 @@ def ubah_pelanggan(data: EditPelangganDto) -> dict:
             "diupdate": data.filter_timestamp}
 
     update = {
-        "id_pelanggan": data.id_pelanggan.upper(),
-        "nama": data.nama,
+        "nama": data.nama.upper(),
         "email": data.email.lower(),
         "hp": data.hp,
         "alamat": data.alamat,
+        "diupdate": data.diupdate,
+        "diupdate_oleh": data.diupdate_oleh,
     }
 
     return mongo.db.pelanggan.find_one_and_update(find, {'$set': update}, return_document=True)

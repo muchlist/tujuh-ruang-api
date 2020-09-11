@@ -1,30 +1,25 @@
 from databases.db import mongo
+from bson import ObjectId
 
 
-def get_pelanggan(id_pelanggan: str) -> dict:
+def get_pelanggan(id_objek: str) -> dict:
     pelanggan = mongo.db.pelanggan.find_one(
-        {"id_pelanggan": id_pelanggan.upper()})
+        {"_id": ObjectId(id_objek)})
+    return pelanggan
+
+def get_pelanggan_by_id_pelanggan(pelanggan_id: str) -> dict:
+    pelanggan = mongo.db.pelanggan.find_one(
+        {"id_pelanggan": pelanggan_id})
     return pelanggan
 
 
-def cari_pelanggan_by_nama(nama: str) -> list:
-    query_string = {'$regex': f'.*{nama.upper()}.*'}
-
-    koleksi_pelanggan = mongo.db.pelanggan.find(
-        {"nama": query_string}
-    ).sort("nama", 1)
+def daftar_pelanggan(nama: str) -> list:
+    find_filter = {}
+    if nama:
+        find_filter["nama"] = {'$regex': f'.*{nama.upper()}.*'}
 
     list_pelanggan = []
-
-    for pelanggan in koleksi_pelanggan:
-        list_pelanggan.append(pelanggan)
-
-    return list_pelanggan
-
-
-def daftar_pelanggan() -> list:
-    list_pelanggan = []
-    result = mongo.db.pelanggan.find({}).sort("nama", 1)
+    result = mongo.db.pelanggan.find(find_filter).sort("nama", 1)
     for pelanggan in result:
         list_pelanggan.append(pelanggan)
 

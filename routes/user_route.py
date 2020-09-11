@@ -14,7 +14,7 @@ from input_schemas.user_input import (UserLoginSchema,
                                       UserChangePassSchema)
 from utils.my_bcrypt import bcrypt
 
-bp = Blueprint('user_bp', __name__)
+bp = Blueprint('user_bp', __name__, url_prefix='/api')
 
 EXPIRED_TOKEN = 30
 

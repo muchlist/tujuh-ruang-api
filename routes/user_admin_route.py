@@ -13,7 +13,7 @@ from input_schemas.user_input import (UserRegisterSchema,
 from utils.my_bcrypt import bcrypt
 from validations import role_validations as valid
 
-bp = Blueprint('user_admin_bp', __name__, url_prefix='/admin')
+bp = Blueprint('user_admin_bp', __name__, url_prefix='/api/admin')
 
 
 def user_eksis(user_id):
