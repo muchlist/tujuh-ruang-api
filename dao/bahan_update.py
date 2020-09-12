@@ -1,6 +1,7 @@
 from dto.bahan_dto import EditBahanDto, BahanDto
 from databases.db import mongo
 from bson.objectid import ObjectId
+from datetime import datetime
 
 
 def buat_bahan(data: BahanDto) -> str:
@@ -38,3 +39,15 @@ def ubah_bahan(data: EditBahanDto) -> dict:
 
 def delete_bahan(id_bahan: str):
     mongo.db.bahan.remove({"_id": ObjectId(id_bahan)})
+
+
+def ubah_gambar_bahan(filter_id: str, image_path: str) -> dict:
+    find = {
+        "_id": ObjectId(filter_id)
+    }
+    update = {
+        "diupdate": datetime.now(),
+        "image": image_path
+    }
+
+    return mongo.db.bahan.find_one_and_update(find, {'$set': update}, return_document=True)
