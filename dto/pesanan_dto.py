@@ -47,13 +47,11 @@ class EditPesananDto(NamedTuple):
     harga_bahan: int
     pelanggan: str
     id_pelanggan: str
-    dibuat: datetime
-    dibuat_oleh: str
     diupdate: datetime
     diupdate_oleh: str
 
 class LunasPesananDto(NamedTuple):
     filter_id: str
-    filter_timestamp: datetime
     diupdate: datetime
     diupdate_oleh: str
+    id_petugas: str

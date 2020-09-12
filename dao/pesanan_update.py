@@ -29,7 +29,7 @@ def buat_pesanan(data: PesananDto) -> str:
     }
 
     data_insert = {
-        "_id": data.no_transakasi,
+        "_id": data.no_transaksi,
         "nama_pesanan": data.nama_pesanan,
         "nama_file": data.nama_file,
         "petugas": data.petugas,
@@ -58,8 +58,6 @@ def ubah_pesanan(data: EditPesananDto) -> dict:
         "nama_file": data.nama_file,
         "petugas": data.petugas,
         "id_petugas": data.id_petugas,
-        "dibuat": data.dibuat,
-        "dibuat_oleh": data.dibuat_oleh,
         "diupdate": data.diupdate,
         "diupdate_oleh": data.diupdate_oleh,
         "pelanggan.nama_pelanggan":  data.pelanggan.upper(),
@@ -80,13 +78,12 @@ def ubah_pesanan(data: EditPesananDto) -> dict:
     return mongo.db.pesanan.find_one_and_update(find, {'$set': update}, return_document=True)
 
 
-def delete_bahan(no_transaksi: str):
+def delete_pesanan(no_transaksi: str):
     mongo.db.pesanan.remove({"_id": no_transaksi})
 
 
 def lunasi(data: LunasPesananDto):
     find = {"_id": data.filter_id,
-            "diupdate": data.filter_timestamp,
             "biaya.apakah_lunas": False}
 
     update = {
@@ -94,6 +91,8 @@ def lunasi(data: LunasPesananDto):
         "biaya.apakah_lunas": True,
         "diupdate": data.diupdate,
         "diupdate_oleh": data.diupdate_oleh,
+        "petugas": data.diupdate_oleh,
+        "id_petugas": data.id_petugas,
     }
 
     return mongo.db.pesanan.find_one_and_update(find, {'$set': update}, return_document=True)

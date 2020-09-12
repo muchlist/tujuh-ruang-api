@@ -7,10 +7,12 @@ def get_pesanan(no_transaksi: str) -> dict:
         {"_id": no_transaksi})
     return pesanan
 
+
 def daftar_pesanan(nama_pelanggan: str, lunas: bool) -> list:
     find_filter = {}
     if nama_pelanggan:
-        find_filter["pelanggan.nama_pelanggan"] = {'$regex': f'.*{nama_pelanggan.upper()}.*'}
+        find_filter["pelanggan.nama_pelanggan"] = {
+            '$regex': f'.*{nama_pelanggan.upper()}.*'}
     if lunas:
         find_filter["biaya.apakah_lunas"] = lunas
 
@@ -20,3 +22,7 @@ def daftar_pesanan(nama_pelanggan: str, lunas: bool) -> list:
         list_pesanan.append(pesanan)
 
     return list_pesanan
+
+
+def pesanan_count() -> int:
+    return mongo.db.pesanan.count_documents({})
