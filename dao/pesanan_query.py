@@ -8,7 +8,10 @@ def get_pesanan(no_transaksi: str) -> dict:
     return pesanan
 
 
-def daftar_pesanan(nama_pelanggan: str, lunas: bool) -> list:
+def daftar_pesanan(id_pelanggan: str,
+                   id_bahan: str,
+                   nama_pelanggan: str,
+                   lunas: bool) -> list:
     find_filter = {}
     if nama_pelanggan:
         find_filter["pelanggan.nama_pelanggan"] = {
@@ -16,13 +19,18 @@ def daftar_pesanan(nama_pelanggan: str, lunas: bool) -> list:
     if lunas:
         find_filter["biaya.apakah_lunas"] = lunas
 
+    if id_pelanggan:
+        find_filter["pelanggan.id_pelanggan"] = id_pelanggan
+        
+    if id_bahan:
+        find_filter["bahan.id_bahan"] = id_bahan
+
     list_pesanan = []
     result = mongo.db.pesanan.find(find_filter).sort("dibuat", -1)
     for pesanan in result:
         list_pesanan.append(pesanan)
 
     return list_pesanan
-
 
 def pesanan_count() -> int:
     return mongo.db.pesanan.count_documents({})

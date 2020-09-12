@@ -60,7 +60,8 @@ def find_pesanan():
         if bahan is None:
             return {"msg": "Bahan tidak ditemukan"}, 400
         harga_bahan = bahan["harga"]
-        total_bayar = harga_bahan * data["ukuran_x"] * data["ukuran_y"] * data["qty"]
+        total_bayar = harga_bahan * \
+            data["ukuran_x"] * data["ukuran_y"] * data["qty"]
         uang_muka = data["uang_muka"]
         sisa_bayar = total_bayar - uang_muka
 
@@ -108,13 +109,20 @@ def find_pesanan():
     if request.method == 'GET':
         nama = request.args.get("nama")
         lunas = request.args.get("lunas")
+        id_pelanggan = request.args.get("pelanggan")
+        id_bahan = request.args.get("bahan")
+
         if lunas:
             if lunas == "1":
                 lunas = True
             else:
                 lunas = False
 
-        pesanan = pesanan_query.daftar_pesanan(nama, lunas)
+        pesanan = pesanan_query.daftar_pesanan(
+            id_pelanggan,
+            id_bahan,
+            nama,
+            lunas)
 
         return {"pesanan": pesanan}, 200
 
@@ -160,7 +168,8 @@ def detail_pesanan(id_pesanan):
         if bahan is None:
             return {"msg": "Bahan tidak ditemukan"}, 400
         harga_bahan = bahan["harga"]
-        total_bayar = harga_bahan * data["ukuran_x"] * data["ukuran_y"] * data["qty"]
+        total_bayar = harga_bahan * \
+            data["ukuran_x"] * data["ukuran_y"] * data["qty"]
         uang_muka = data["uang_muka"]
         sisa_bayar = total_bayar - uang_muka
 
@@ -213,27 +222,6 @@ def detail_pesanan(id_pesanan):
 
         pesanan_update.delete_pesanan(id_pesanan)
         return {"msg": "pesanan dihapus"}, 204
-
-
-"""
-------------------------------------------------------------------------------
-menagktifkan Status pesanan localhost:5001/pesanan/objectID/aktif
-------------------------------------------------------------------------------
-"""
-
-
-@bp.route("/pesanan/<objek_id>/aktif", methods=['GET'])
-@jwt_required
-def mengaktifkan_ulang_pesanan(objek_id):
-    if not ObjectId.is_valid(objek_id):
-        return {"msg": "Object ID tidak valid"}, 400
-
-    claims = get_jwt_claims()
-    if not is_admin(claims):
-        return {"msg": "User tidak memiliki hak akses"}, 400
-
-    pesanan_update.aktifkan_pesanan(objek_id)
-    return {"msg": "pesanan diaktifkan"}, 200
 
 
 """
