@@ -10,6 +10,7 @@ from routes.user_admin_route import bp as user_bp_admin
 from routes.pelanggan_route import bp as pelanggan_bp
 from routes.bahan_route import bp as bahan_bp
 from routes.pesanan_route import bp as pesanan_bp
+from routes.crud_route import bp as crud_bp
 from routes.image_route import bp as image_bp
 from utils.image_helper import IMAGE_SET
 from utils.my_bcrypt import bcrypt
@@ -47,6 +48,7 @@ app.register_blueprint(pelanggan_bp)
 app.register_blueprint(bahan_bp)
 app.register_blueprint(pesanan_bp)
 app.register_blueprint(image_bp)
+app.register_blueprint(crud_bp)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, debug=True)
