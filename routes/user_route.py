@@ -112,7 +112,7 @@ List User
 def user_list():
     users = user_query.get_many()
 
-    return jsonify(users), 200
+    return {"user": users}, 200
 
 
 """
