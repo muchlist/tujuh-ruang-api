@@ -14,7 +14,9 @@ def get_pelanggan_by_id_pelanggan(pelanggan_id: str) -> dict:
 
 
 def daftar_pelanggan(nama: str) -> list:
-    find_filter = {}
+    find_filter = {
+        "aktif" : True,
+    }
     if nama:
         find_filter["nama"] = {'$regex': f'.*{nama.upper()}.*'}
 
