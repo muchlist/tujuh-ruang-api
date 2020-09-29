@@ -113,12 +113,6 @@ def find_pesanan():
         id_pelanggan = request.args.get("pelanggan")
         id_bahan = request.args.get("bahan")
 
-        if lunas:
-            if lunas == "1":
-                lunas = True
-            else:
-                lunas = False
-
         pesanan = pesanan_query.daftar_pesanan(
             id_pelanggan,
             id_bahan,

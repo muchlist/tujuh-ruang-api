@@ -11,13 +11,16 @@ def get_pesanan(no_transaksi: str) -> dict:
 def daftar_pesanan(id_pelanggan: str,
                    id_bahan: str,
                    nama_pelanggan: str,
-                   lunas: bool) -> list:
+                   lunas: str) -> list:
     find_filter = {}
     if nama_pelanggan:
         find_filter["pelanggan.nama_pelanggan"] = {
             '$regex': f'.*{nama_pelanggan.upper()}.*'}
     if lunas:
-        find_filter["biaya.apakah_lunas"] = lunas
+        if lunas == "1":
+            find_filter["biaya.apakah_lunas"] = True
+        else:
+            find_filter["biaya.apakah_lunas"] = False
 
     if id_pelanggan:
         find_filter["pelanggan.id_pelanggan"] = id_pelanggan
