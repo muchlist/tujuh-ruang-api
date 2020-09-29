@@ -97,6 +97,7 @@ def find_pesanan():
             dibuat_oleh=claims["name"],
             diupdate=datetime.now(),
             diupdate_oleh=claims["name"],
+            satuan_bahan=bahan["satuan"],
         )
 
         try:
@@ -204,6 +205,7 @@ def detail_pesanan(id_pesanan):
             id_pelanggan=data["id_pelanggan"],
             diupdate=datetime.now(),
             diupdate_oleh=claims["name"],
+            satuan_bahan=bahan["satuan"],
         )
 
         try:

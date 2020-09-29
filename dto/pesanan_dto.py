@@ -19,6 +19,7 @@ class PesananDto(NamedTuple):
     bahan: str
     id_bahan: str
     harga_bahan: int
+    satuan_bahan: str
     pelanggan: str
     id_pelanggan: str
     dibuat: datetime
@@ -45,6 +46,7 @@ class EditPesananDto(NamedTuple):
     bahan: str
     id_bahan: str
     harga_bahan: int
+    satuan_bahan: str
     pelanggan: str
     id_pelanggan: str
     diupdate: datetime
