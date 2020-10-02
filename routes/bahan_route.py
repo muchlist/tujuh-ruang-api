@@ -14,6 +14,8 @@ from dto.bahan_dto import BahanDto, EditBahanDto
 from input_schemas.bahan_input import (BahanRegisterSchema,
                                        BahanEditSchema,)
 from validations.role_validations import is_admin, is_staff
+from utils.name_generator import create_random_name
+from utils.reports.pdf_bahan import generate_pdf
 
 bp = Blueprint('bahan_bp', __name__, url_prefix='/api')
 
@@ -130,3 +132,33 @@ def detail_bahan(objek_id):
 
         bahan_update.delete_bahan(objek_id)
         return {"msg": "bahan dihapus"}, 204
+
+
+"""
+Bahan report
+
+"""
+
+@bp.route("/bahan-reports", methods=['GET'])
+@jwt_required
+def report_bahan():
+    claims = get_jwt_claims()
+
+    if request.method == 'GET':
+
+        if not is_staff(claims):
+            return {"msg": "User tidak memiliki hak akses"}, 400
+
+    
+        bahan = bahan_query.daftar_bahan("")
+
+        pdf_file_name = create_random_name()
+
+        # Membuat pdf
+        try:
+            generate_pdf(pdf_name=pdf_file_name, data_bahan=bahan)
+        except:
+            return {"msg": "Membuat PDF Gagal"}, 500
+
+        return {"msg": pdf_file_name}, 200
+

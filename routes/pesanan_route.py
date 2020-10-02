@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 import string
 import random
+from utils.name_generator import create_random_name
 
 from flask_jwt_extended.utils import get_jwt_identity
 
@@ -17,8 +18,9 @@ from dao import (pesanan_query,
                  bahan_query,
                  pelanggan_query)
 from dto.pesanan_dto import LunasPesananDto, PesananDto, EditPesananDto
-from input_schemas.pesanan_input import (BuatPesananSchema, EditPesananSchema)
+from input_schemas.pesanan_input import (BuatPesananSchema, EditPesananSchema, ReportsPesananSchema)
 from validations.role_validations import is_admin, is_staff
+from utils.reports.pdf_penjualan import generate_pdf
 
 bp = Blueprint('pesanan_bp', __name__, url_prefix='/api')
 
@@ -117,7 +119,9 @@ def find_pesanan():
             id_pelanggan,
             id_bahan,
             nama,
-            lunas)
+            lunas,
+            None, 
+            None)
 
         return {"pesanan": pesanan}, 200
 
@@ -246,3 +250,59 @@ def melunasi_pesanan(id_transaksi):
         return {"msg": "Kesalahan pada ID, atau sudah ada perubahan sebelumnya"}, 400
 
     return jsonify(result), 200
+
+
+"""
+------------------------------------------------------------------------------
+Pesanan Reports
+------------------------------------------------------------------------------
+"""
+
+
+@bp.route("/pesanan-reports", methods=['POST'])
+@jwt_required
+def reports_pesanan():
+    claims = get_jwt_claims()
+
+    if request.method == 'POST':
+
+        schema = ReportsPesananSchema()
+        try:
+            data = schema.load(request.get_json())
+        except ValidationError as err:
+            return {"msg": str(err.messages)}, 400
+
+        if not is_staff(claims):
+            return {"msg": "User tidak memiliki hak akses"}, 400
+
+        nama = request.args.get("nama")
+        lunas = request.args.get("lunas")
+        id_pelanggan = request.args.get("pelanggan")
+        id_bahan = request.args.get("bahan")
+
+        if lunas == "1":
+            title = "Data Penjualan"
+        elif lunas == "0":
+            title = "Data Piutang"
+        else:
+            title = "Data Keseluruhan Penjualan (Termasuk yang belum lunas)"
+
+        pdf_file_name = create_random_name()
+
+        pesanan = pesanan_query.daftar_pesanan(
+            id_pelanggan,
+            id_bahan,
+            nama,
+            lunas,
+            data["start_date"], 
+            data["end_date"],)
+
+        if len(pesanan) == 0:
+            return {"msg": "Penjualan pada range tanggal tersebut tidak ada"}, 404
+
+        pesanan.reverse()
+
+        generate_pdf(pdf_file_name,pesanan,data["start_date"], data["end_date"], title)
+
+        return {"msg": pdf_file_name}, 200
+

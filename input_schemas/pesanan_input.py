@@ -28,3 +28,8 @@ class EditPesananSchema(Schema):
     finishing = fields.Str(required=True)
     id_bahan = fields.Str(required=True)
     id_pelanggan = fields.Str(required=True)
+
+
+class ReportsPesananSchema(Schema):
+    start_date = fields.DateTime(required=True)
+    end_date = fields.DateTime(required=True)

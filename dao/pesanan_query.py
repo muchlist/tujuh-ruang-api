@@ -1,5 +1,6 @@
 from databases.db import mongo
 from bson import ObjectId
+from datetime import datetime
 
 
 def get_pesanan(no_transaksi: str) -> dict:
@@ -11,7 +12,9 @@ def get_pesanan(no_transaksi: str) -> dict:
 def daftar_pesanan(id_pelanggan: str,
                    id_bahan: str,
                    nama_pelanggan: str,
-                   lunas: str) -> list:
+                   lunas: str,
+                   start_date: datetime,
+                   end_date: datetime) -> list:
     find_filter = {}
     if nama_pelanggan:
         find_filter["pelanggan.nama_pelanggan"] = {
@@ -27,6 +30,12 @@ def daftar_pesanan(id_pelanggan: str,
         
     if id_bahan:
         find_filter["bahan.id_bahan"] = id_bahan
+    
+    if start_date is not None and end_date is not None:
+        find_filter["dibuat"] = {
+            '$gte': start_date,
+            '$lte': end_date,
+        }
 
     list_pesanan = []
     result = mongo.db.pesanan.find(find_filter).sort("dibuat", -1)
