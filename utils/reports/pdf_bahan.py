@@ -5,6 +5,7 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import mm
 from reportlab.lib import colors
 from utils.rupiah_generator import rupiah_format
+from decimal import *
 
 
 def generate_pdf(pdf_name: str, data_bahan: list):
@@ -68,7 +69,7 @@ def generate_pdf(pdf_name: str, data_bahan: list):
 
         data.append([para(data_bahan[i]["nama"]),
                      para(data_bahan[i]["spek"]),
-                     para(rupiah_format(data_bahan[i]["harga"])), ])
+                     para(rupiah_format(Decimal(data_bahan[i]["harga"]))), ])
 
     tblstyle = TableStyle([
         ('GRID', (0, 0), (-1, -1), 0.25, colors.black),

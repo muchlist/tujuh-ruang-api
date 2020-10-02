@@ -155,10 +155,11 @@ def report_bahan():
         pdf_file_name = create_random_name()
 
         # Membuat pdf
-        try:
-            generate_pdf(pdf_name=pdf_file_name, data_bahan=bahan)
-        except:
-            return {"msg": "Membuat PDF Gagal"}, 500
+        generate_pdf(pdf_name=pdf_file_name, data_bahan=bahan)
+        # try:
+        #     generate_pdf(pdf_name=pdf_file_name, data_bahan=bahan)
+        # except:
+        #     return {"msg": "Membuat PDF Gagal"}, 500
 
         return {"msg": pdf_file_name}, 200
 
