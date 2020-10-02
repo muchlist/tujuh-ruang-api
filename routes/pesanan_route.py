@@ -49,10 +49,16 @@ def find_pesanan():
             return {"msg": "User tidak memiliki hak akses"}, 400
 
         # cek apakah id pesanan sudah ada
+        timenow = datetime.now()
+        hours = 8
+        hours_added = datetime.timedelta(hours = hours)
+
+        timenow = timenow + hours_added
+
         id_pesanan_generate = pesanan_query.pesanan_count() + 1
-        currentDay = datetime.now().day
-        currentMonth = datetime.now().month
-        currentYear = datetime.now().year
+        currentDay = timenow.now().day
+        currentMonth = timenow.now().month
+        currentYear = timenow.now().year
         random_char = random.choice(string.ascii_letters)
         id_pesanan_generate = f"{currentDay}{random_char}{currentMonth}{currentYear}-{id_pesanan_generate}"
 
@@ -95,9 +101,9 @@ def find_pesanan():
             harga_bahan=bahan["harga"],
             pelanggan=pelanggan["nama"],
             id_pelanggan=data["id_pelanggan"],
-            dibuat=datetime.now(),
+            dibuat=timenow,
             dibuat_oleh=claims["name"],
-            diupdate=datetime.now(),
+            diupdate=timenow,
             diupdate_oleh=claims["name"],
             satuan_bahan=bahan["satuan"],
         )
@@ -181,6 +187,12 @@ def detail_pesanan(id_pesanan):
         if pelanggan is None:
             return {"msg": "Pelanggan tidak ditemukan"}, 400
 
+        timenow = datetime.now()
+        hours = 8
+        hours_added = datetime.timedelta(hours = hours)
+
+        timenow = timenow + hours_added
+
         edit_pesanan_dto = EditPesananDto(
             filter_id=id_pesanan,
             filter_timestamp=data["timestamp_filter"],
@@ -201,7 +213,7 @@ def detail_pesanan(id_pesanan):
             harga_bahan=bahan["harga"],
             pelanggan=pelanggan["nama"],
             id_pelanggan=data["id_pelanggan"],
-            diupdate=datetime.now(),
+            diupdate=timenow,
             diupdate_oleh=claims["name"],
             satuan_bahan=bahan["satuan"],
         )
@@ -239,8 +251,15 @@ def melunasi_pesanan(id_transaksi):
     if not is_staff(claims):
         return {"msg": "User tidak memiliki hak akses"}, 400
 
+    timenow = datetime.now()
+    hours = 8
+    hours_added = datetime.timedelta(hours = hours)
+
+    timenow = timenow + hours_added
+    
+
     lunas_pesanan_dto = LunasPesananDto(filter_id=id_transaksi,
-                                        diupdate=datetime.now(),
+                                        diupdate=timenow,
                                         diupdate_oleh=claims["name"],
                                         id_petugas=get_jwt_identity()
                                         )
