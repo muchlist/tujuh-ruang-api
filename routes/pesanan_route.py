@@ -51,7 +51,7 @@ def find_pesanan():
         # cek apakah id pesanan sudah ada
         timenow = datetime.now()
         hours = 8
-        hours_added = datetime.timedelta(hours = hours)
+        hours_added = timedelta(hours = hours)
 
         timenow = timenow + hours_added
 
@@ -189,7 +189,7 @@ def detail_pesanan(id_pesanan):
 
         timenow = datetime.now()
         hours = 8
-        hours_added = datetime.timedelta(hours = hours)
+        hours_added = timedelta(hours = hours)
 
         timenow = timenow + hours_added
 
@@ -253,7 +253,7 @@ def melunasi_pesanan(id_transaksi):
 
     timenow = datetime.now()
     hours = 8
-    hours_added = datetime.timedelta(hours = hours)
+    hours_added = timedelta(hours = hours)
 
     timenow = timenow + hours_added
     
