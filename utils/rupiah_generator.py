@@ -7,31 +7,24 @@ import locale
 #         return "Rp. {}".format(rupiah)
 #     return "{}".format(rupiah)
 
-def rupiah_format(angka, desimal=2, prefix=True):
+
+def rupiah_format_old(angka, desimal=2, prefix=True):
     locale.setlocale(locale.LC_ALL, '')
     rupiah = locale.format("%.*f", (desimal, angka), True)
     if prefix:
         return "Rp. {}".format(rupiah)
     return "{}".format(rupiah)
 
-# assume value is a decimal
-# def rupiah_format(value, with_rp: bool= True):
-#     str_value = str(value)
-#     separate_decimal = str_value.split(".")
-#     after_decimal = separate_decimal[0]
-#     before_decimal = separate_decimal[1]
 
-#     reverse = after_decimal[::-1]
-#     temp_reverse_value = ""
+def rupiah_format(angka: int, desimal=2, prefix=True) -> str:
+    some_string = str(angka)
+    some_string = some_string[::-1]
+    x = 3
+    res = [some_string[y-x:y] for y in range(x, len(some_string)+x, x)]
 
-#     for index, val in enumerate(reverse):
-#         if (index + 1) % 3 == 0 and index + 1 != len(reverse):
-#             temp_reverse_value = temp_reverse_value + val + "."
-#         else:
-#             temp_reverse_value = temp_reverse_value + val
+    res_join = ".".join(res)
+    reverse_res = res_join[::-1]
 
-#     temp_result = temp_reverse_value[::-1]
-
-#     if with_rp:
-#         return "Rp " + temp_result + "," + before_decimal
-#     return temp_result + "," + before_decimal
+    if prefix:
+        return f"Rp. {reverse_res},00"
+    return reverse_res
