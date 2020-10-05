@@ -21,6 +21,7 @@ from dto.pesanan_dto import LunasPesananDto, PesananDto, EditPesananDto
 from input_schemas.pesanan_input import (BuatPesananSchema, EditPesananSchema, ReportsPesananSchema)
 from validations.role_validations import is_admin, is_staff
 from utils.reports.pdf_penjualan import generate_pdf
+from utils.reports.pdf_penjualan_nota import generate_pdf as gnota
 
 bp = Blueprint('pesanan_bp', __name__, url_prefix='/api')
 
@@ -325,3 +326,34 @@ def reports_pesanan():
 
         return {"msg": pdf_file_name}, 200
 
+
+"""
+------------------------------------------------------------------------------
+Detail pesanan Reports localhost:5001/pesanan-reports/objectID
+------------------------------------------------------------------------------
+"""
+
+
+@bp.route("/pesanan-reports/<id_pesanan>", methods=['GET'])
+@jwt_required
+def detail_pesanan_reports(id_pesanan):
+
+    try:
+        pesanan = pesanan_query.get_pesanan(id_pesanan)
+    except:
+        return {"msg": "Gagal mengambil data dari database"}, 500
+
+    if pesanan is None:
+        return {"msg": "Pesanan dengan ID tersebut tidak ditemukan"}, 400
+
+    pdf_file_name = create_random_name()
+
+    # Membuat pdf
+    # try:
+    #     generate_pdf(pdf_name=pdf_file_name,data_pelanggan=pelanggan)
+    # except:
+    #     return {"msg": "Membuat PDF Gagal"}, 500
+
+    gnota(pdf_name=pdf_file_name,dp=pesanan)
+
+    return {"msg": pdf_file_name}, 200

@@ -1,4 +1,4 @@
-import locale
+# import locale
 
 # def rupiah_format(angka, desimal=2, prefix=True):
 #     locale.setlocale(locale.LC_NUMERIC, 'IND')
@@ -8,12 +8,12 @@ import locale
 #     return "{}".format(rupiah)
 
 
-def rupiah_format_old(angka, desimal=2, prefix=True):
-    locale.setlocale(locale.LC_ALL, '')
-    rupiah = locale.format("%.*f", (desimal, angka), True)
-    if prefix:
-        return "Rp. {}".format(rupiah)
-    return "{}".format(rupiah)
+# def rupiah_format_old(angka, desimal=2, prefix=True):
+#     locale.setlocale(locale.LC_ALL, '')
+#     rupiah = locale.format("%.*f", (desimal, angka), True)
+#     if prefix:
+#         return "Rp. {}".format(rupiah)
+#     return "{}".format(rupiah)
 
 
 def rupiah_format(angka: int, desimal=2, prefix=True) -> str:
