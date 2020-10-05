@@ -77,6 +77,9 @@ def find_pesanan():
         if sisa_bayar < 0:
             return {"msg": "Gagal menyimpan, kelebihan bayar"}, 400
 
+        if data["apakah_lunas"] == True:
+            sisa_bayar = 0
+
         # relasi pelanggan
         id_pelanggan = data["id_pelanggan"]
         pelanggan = pelanggan_query.get_pelanggan_by_id_pelanggan(id_pelanggan)
